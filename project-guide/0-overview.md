@@ -23,7 +23,7 @@ React is a JavaScript library for building user interfaces. It follows a compone
 - When you need reusable components for UI consistency.
 - When performance optimization is crucial.
 
-### Practical Exercise
+###  Exercise
 
 1. Set up a basic React application.
 2. Create a functional component that displays `"Hello, React!"`.
