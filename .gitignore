@@ -28,6 +28,6 @@ dist-ssr
 *.sw?
 
 
-# Ignore project-guide folder and specific files
+
 project-guide/8-1-example-implementation.md
 project-guide/4-1-github-profile.md
