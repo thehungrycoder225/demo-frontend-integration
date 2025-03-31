@@ -1,248 +1,244 @@
-# **DevNotes: JWT Authentication with Role-Based Access Control (RBAC) in React & REST API**
+# User Authentication with JWT (React + REST API)
 
-## **1. Overview**
+## 1. Understanding JWT (JSON Web Tokens)
 
-This guide covers implementing **JWT Authentication** with **Role-Based Access Control (RBAC)** in a React frontend connected to a REST API. It ensures only authorized users can access protected routes and enforces role-specific access control.
+### What is a JWT?
 
-### **Key Features:**
+A compact, URL-safe token format (`header.payload.signature`) for securely transmitting claims between parties.
 
-- Secure **User Registration & Login**
-- **JWT Authentication** with LocalStorage
-- **Protected Routes** using React Router
-- **Role-Based Access Control (RBAC)** (e.g., Admin/User)
-- **Logout Handling**
-- **Error Handling & Best Practices**
+**Structure:**
+
+```
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c
+```
+
+**Use Case:**  
+After login, the server returns a JWT, which the frontend stores (e.g., in `localStorage` or `httpOnly` cookies) and sends with subsequent requests.
 
 ---
 
-## **2. Project Structure**
+## 2. Best Practices with Relatable Examples
 
-```
-project-root/
-├── src/
-│   ├── components/
-│   │   ├── Login.jsx
-│   │   ├── Logout.jsx
-│   │   ├── ProtectedRoute.jsx
-│   ├── context/
-│   │   ├── AuthContext.jsx
-│   ├── pages/
-│   │   ├── Dashboard.jsx
-│   │   ├── AdminPage.jsx
-│   │   ├── Unauthorized.jsx
-│   ├── services/
-│   │   ├── authService.js
-│   ├── App.jsx
-│   ├── index.jsx
-├── .env
-├── package.json
+### 2.1 Secure Token Storage
+
+**Bad Practice:** Storing JWT in `localStorage` without encryption (vulnerable to XSS).  
+ **Best Practice:**
+
+- Use `httpOnly` cookies (server-side) for better security.
+- If using `localStorage`, encrypt the token (e.g., with `crypto-js`).
+
+**Example (Frontend - Storing Token):**
+
+```jsx
+// After successful login:
+const { token } = await axios.post('/api/login', { email, password });
+localStorage.setItem('authToken', token); // Only if no httpOnly option
+axios.defaults.headers.common['Authorization'] = `Bearer ${token}`; // Attach to headers
 ```
 
 ---
 
-## **3. Authentication Workflow**
+### 2.2 Token Expiry & Refresh Tokens
 
-### **Step 1: Setting Up Authentication Service**
+**Bad Practice:** Using a single long-lived JWT (risk if stolen).  
+ **Best Practice:**
 
-#### **`src/services/authService.js`**
+- Set short-lived access tokens (e.g., 15 mins) + long-lived refresh tokens.
+- Store refresh tokens securely (`httpOnly` cookie) and use them to get new access tokens.
 
-```js
-import axios from 'axios';
+**Example (Token Refresh Flow):**
 
-const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
+```jsx
+// 1. Login -> Get accessToken and refreshToken
+const { accessToken, refreshToken } = await loginUser();
 
-export const registerUser = async (userData) =>
-  axios.post(`${API_URL}/register`, userData);
-export const loginUser = async (userData) =>
-  axios.post(`${API_URL}/login`, userData);
-export const getUserProfile = async (token) => {
-  return axios.get(`${API_URL}/profile`, {
-    headers: { Authorization: `Bearer ${token}` },
-  });
+// 2. When accessToken expires, call `/refresh` endpoint
+try {
+  const { newAccessToken } = await axios.post('/api/refresh', { refreshToken });
+  localStorage.setItem('authToken', newAccessToken);
+} catch (err) {
+  // Force logout if refresh fails
+  localStorage.removeItem('authToken');
+  window.location.href = '/login';
+}
+```
+
+---
+
+### 2.3 Protecting Routes
+
+**Bad Practice:** Only checking token presence (no validation).  
+ **Best Practice:**
+
+- Verify token validity (e.g., signature, expiry) before granting access.
+- Use a higher-order component (HOC) or `<ProtectedRoute>` wrapper.
+
+**Example (ProtectedRoute.jsx):**
+
+```jsx
+import { Navigate } from 'react-router-dom';
+
+const ProtectedRoute = ({ children }) => {
+  const token = localStorage.getItem('authToken');
+  const isAuthenticated = token && !isTokenExpired(token); // Add expiry check
+
+  return isAuthenticated ? children : <Navigate to='/login' replace />;
+};
+
+// Usage:
+<Route
+  path='/dashboard'
+  element={
+    <ProtectedRoute>
+      <Dashboard />
+    </ProtectedRoute>
+  }
+/>;
+```
+
+---
+
+### 2.4 Handling Token Expiry Gracefully
+
+**Bad Practice:** Silent failures when token expires.  
+ **Best Practice:**
+
+- Intercept `401` errors globally (Axios) and attempt token refresh.
+
+**Example (Axios Interceptor):**
+
+```jsx
+axios.interceptors.response.use(
+  (response) => response,
+  async (error) => {
+    if (error.response.status === 401) {
+      try {
+        const newToken = await refreshToken();
+        error.config.headers.Authorization = `Bearer ${newToken}`;
+        return axios(error.config); // Retry request
+      } catch (refreshError) {
+        localStorage.removeItem('authToken');
+        window.location.href = '/login';
+      }
+    }
+    return Promise.reject(error);
+  }
+);
+```
+
+---
+
+### 2.5 CSRF Protection
+
+**Bad Practice:** Ignoring CSRF when using cookies.  
+ **Best Practice:**
+
+- Use anti-CSRF tokens (e.g., `csrf-token` header) if using cookies.
+
+**Example (Django-style CSRF):**
+
+```jsx
+// Frontend: Attach CSRF token from cookie to headers
+const csrfToken = getCookie('csrftoken');
+axios.defaults.headers.common['X-CSRF-TOKEN'] = csrfToken;
+```
+
+---
+
+### 2.6 Password Security
+
+**Bad Practice:** Sending plaintext passwords.  
+ **Best Practice:**
+
+- Always hash passwords on the backend.
+- Use HTTPS to encrypt traffic.
+
+**Example (Frontend - Basic Validation):**
+
+```jsx
+// Prevent weak passwords before sending to API
+const handleSubmit = () => {
+  if (password.length < 8) {
+    setError('Password must be 8+ characters');
+    return;
+  }
+  axios.post('/api/register', { email, password });
 };
 ```
 
 ---
 
-### **Step 2: Context API for Global Auth State**
+### 2.7 Logout Mechanism
 
-#### **`src/context/AuthContext.js`**
+**Bad Practice:** Only clearing frontend token.  
+ **Best Practice:**
 
-```js
-import { createContext, useState, useEffect } from 'react';
+- Call a `/logout` endpoint to invalidate the token on the server.
+- Clear client-side storage.
 
-const AuthContext = createContext();
+**Example (Logout Flow):**
 
-export function AuthProvider({ children }) {
-  const [user, setUser] = useState(null);
-
-  useEffect(() => {
-    const token = localStorage.getItem('token');
-    const role = localStorage.getItem('role');
-    if (token && role) {
-      setUser({ token, role });
-    }
-  }, []);
-
-  const login = (userData) => {
-    localStorage.setItem('token', userData.token);
-    localStorage.setItem('role', userData.role);
-    setUser(userData);
-  };
-
-  const logout = () => {
-    localStorage.clear();
-    setUser(null);
-  };
-
-  return (
-    <AuthContext.Provider value={{ user, login, logout }}>
-      {children}
-    </AuthContext.Provider>
-  );
-}
-
-export default AuthContext;
+```jsx
+const handleLogout = async () => {
+  await axios.post('/api/logout'); // Server blacklists token
+  localStorage.removeItem('authToken');
+  window.location.href = '/login';
+};
 ```
 
 ---
 
-### **Step 3: Implementing Login with Role Handling**
+## 3. Real-World Example: Auth Flow in a Todo App
 
-#### **`src/components/Login.jsx`**
+### Step 1: Login
 
-```js
-import { useForm } from 'react-hook-form';
-import { loginUser } from '../services/authService';
-import AuthContext from '../context/AuthContext';
-import { useContext } from 'react';
-import { useNavigate } from 'react-router-dom';
+```jsx
+const login = async (email, password) => {
+  const res = await axios.post('/api/login', { email, password });
+  localStorage.setItem('authToken', res.data.token);
+  axios.defaults.headers.common['Authorization'] = `Bearer ${res.data.token}`;
+};
+```
 
-function Login() {
-  const { login } = useContext(AuthContext);
-  const navigate = useNavigate();
-  const { register, handleSubmit } = useForm();
+### Step 2: Authenticated API Calls
 
-  const onSubmit = async (data) => {
-    try {
-      const response = await loginUser(data);
-      login(response.data);
-      navigate(response.data.role === 'admin' ? '/admin' : '/dashboard');
-    } catch (error) {
-      alert('Invalid login credentials');
-    }
-  };
+```jsx
+// Fetch protected data
+const fetchTodos = async () => {
+  const res = await axios.get('/api/todos');
+  setTodos(res.data);
+};
+```
 
-  return (
-    <form onSubmit={handleSubmit(onSubmit)}>
-      <input {...register('email')} placeholder='Email' />
-      <input type='password' {...register('password')} placeholder='Password' />
-      <button type='submit'>Login</button>
-    </form>
-  );
-}
+### Step 3: Token Refresh
 
-export default Login;
+```jsx
+// In a separate service file (auth.js)
+export const refreshAuthToken = async () => {
+  const refreshToken = getCookie('refreshToken');
+  const res = await axios.post('/api/refresh', { refreshToken });
+  localStorage.setItem('authToken', res.data.accessToken);
+  return res.data.accessToken;
+};
 ```
 
 ---
 
-### **Step 4: Role-Based Protected Routes**
+## 4. Common Pitfalls & Fixes
 
-#### **`src/components/ProtectedRoute.jsx`**
-
-```js
-import { useContext } from 'react';
-import { Navigate } from 'react-router-dom';
-import AuthContext from '../context/AuthContext';
-
-function ProtectedRoute({ children, requiredRole }) {
-  const { user } = useContext(AuthContext);
-
-  if (!user) return <Navigate to='/login' />;
-  if (requiredRole && user.role !== requiredRole)
-    return <Navigate to='/unauthorized' />;
-
-  return children;
-}
-
-export default ProtectedRoute;
-```
+| **Pitfall**                   | **Solution**                       |
+| ----------------------------- | ---------------------------------- |
+| Storing JWT in `localStorage` | Use `httpOnly` cookies or encrypt. |
+| No token expiry check         | Validate `exp` claim in JWT.       |
+| No refresh token logic        | Implement `/refresh` endpoint.     |
+| No CSRF protection            | Add `X-CSRF-TOKEN` header.         |
 
 ---
 
-### **Step 5: Implementing Role-Based Routes in `App.jsx`**
+## 5. Key Takeaways
 
-#### **`src/App.jsx`**
-
-```js
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { AuthProvider } from './context/AuthContext';
-import ProtectedRoute from './components/ProtectedRoute';
-import Login from './components/Login';
-import Logout from './components/Logout';
-import Dashboard from './pages/Dashboard';
-import AdminPage from './pages/AdminPage';
-import Unauthorized from './pages/Unauthorized';
-
-function App() {
-  return (
-    <AuthProvider>
-      <Router>
-        <Routes>
-          <Route path='/login' element={<Login />} />
-          <Route path='/logout' element={<Logout />} />
-          <Route path='/unauthorized' element={<Unauthorized />} />
-
-          <Route
-            path='/dashboard'
-            element={
-              <ProtectedRoute>
-                <Dashboard />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path='/admin'
-            element={
-              <ProtectedRoute requiredRole='admin'>
-                <AdminPage />
-              </ProtectedRoute>
-            }
-          />
-        </Routes>
-      </Router>
-    </AuthProvider>
-  );
-}
-
-export default App;
-```
-
----
-
-### **Step 6: Implementing Logout**
-
-#### **`src/components/Logout.js`**
-
-```js
-import { useContext } from 'react';
-import AuthContext from '../context/AuthContext';
-
-function Logout() {
-  const { logout } = useContext(AuthContext);
-  return <button onClick={logout}>Logout</button>;
-}
-
-export default Logout;
-```
-
----
-
-## **7. Summary & Best Practices**
-
-✅ **Secure authentication with JWT & LocalStorage**
-✅ **Role-Based Access using React Context**
-✅ **Protected routes using `ProtectedRoute.js`**
-✅ **Logout and automatic token removal**
-✅ **Graceful error handling & redirects**
+- Never store sensitive data in JWT (e.g., passwords).
+- Always expire tokens (short-lived access + refresh tokens).
+- Secure storage: Prefer `httpOnly` cookies over `localStorage`.
+- Handle `401` errors globally with Axios interceptors.
+- Protect routes with `<ProtectedRoute>`.
