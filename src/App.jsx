@@ -21,6 +21,7 @@ function App() {
           }
         />
         <Route path='*' element={<Navigate to='/dashboard' replace />} />
+        {/* set default route */}
         <Route path='/' element={<Navigate to='/login' replace />} />
       </Routes>
     </BrowserRouter>

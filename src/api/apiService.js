@@ -32,7 +32,12 @@ api.interceptors.response.use(
       originalRequest._retry = true;
 
       try {
-        const newToken = await refreshToken();
+        const newToken = await axios.post(`${BASE_URI}/auth/refresh`, {
+          token: localStorage.getItem('refreshToken'),
+        });
+        if (newToken.status !== 200) {
+          throw new Error('Failed to refresh token');
+        }
         localStorage.setItem('accessToken', newToken);
         originalRequest.headers.Authorization = `Bearer ${newToken}`;
         return api(originalRequest);
