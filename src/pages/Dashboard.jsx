@@ -31,31 +31,38 @@ const Dashboard = () => {
 
   return (
     <div className='flex flex-col items-center justify-center min-h-screen'>
-      <div className='grid grid-cols-3 gap-4 p-4 bg-white justify-between items-center'>
-        <h3 className='font-bold'>Dashboard</h3>
-        <h4 className='font-semibold'>Pokémon Table</h4>
-        <button
-          onClick={handleLogout}
-          className='bg-pink-900 text-white p-2 rounded mt-4'
-        >
-          Logout
-        </button>
+      <div className='flex gap-4 items-baseline w-full max-w-2xl justify-between p-4'>
+        <div>
+          <h3 className='font-bold '>Dashboard</h3>
+        </div>
+
+        <div>
+          <button
+            onClick={handleLogout}
+            className='bg-pink-900 text-white p-2 rounded mt-4 hover:bg-pink-700 transition duration-300 ease-in-out'
+          >
+            Logout
+          </button>
+        </div>
       </div>
       <div className='p-4 mt-4 bg-white shadow-md rounded-lg w-full max-w-2xl'>
-        <table className='min-w-full border-collapse border border-gray-200 mt-4 '>
+        <div>
+          <h4 className='font-semibold'>Pokémon Table</h4>
+        </div>
+        <table className='min-w-full border-collapse mt-4 '>
           <thead>
             <tr className='bg-gray-100'>
-              <th className='border border-gray-200 p-2'>ID</th>
-              <th className='border border-gray-200 p-2'>Name</th>
-              <th className='border border-gray-200 p-2'>Type</th>
+              <th className=' p-2'>ID</th>
+              <th className=' p-2'>Name</th>
+              <th className=' p-2'>Type</th>
             </tr>
           </thead>
           <tbody>
             {pokemonData.map(({ _id, name, type }) => (
               <tr key={_id}>
-                <td className='border border-gray-200 p-2'>{_id}</td>
-                <td className='border border-gray-200 p-2'>{name}</td>
-                <td className='border border-gray-200 p-2'>{type}</td>
+                <td className=' p-2'>{_id}</td>
+                <td className=' p-2'>{name}</td>
+                <td className=' p-2'>{type}</td>
               </tr>
             ))}
           </tbody>

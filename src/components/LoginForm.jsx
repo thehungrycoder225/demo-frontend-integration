@@ -67,7 +67,7 @@ const LoginForm = () => {
 
         <button
           type='submit'
-          className='bg-neutral-900 font-semibold text-white p-3 rounded'
+          className='bg-neutral-900 font-semibold text-white p-3 rounded hover:bg-neutral-800 transition duration-200 ease-in-out w-full'
         >
           Login
         </button>
