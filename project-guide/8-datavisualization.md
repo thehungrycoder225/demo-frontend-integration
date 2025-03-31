@@ -6,10 +6,10 @@ Data visualization helps users understand trends, patterns, and insights quickly
 
 ### Best Practices
 
-- ✅ **Use the Right Chart Type**
-- ✅ **Optimize Performance** (Avoid unnecessary re-renders)
-- ✅ **Ensure Accessibility** (Labels, contrast, keyboard navigation)
-- ✅ **Keep It Simple** (Avoid clutter, highlight key insights)
+- **Use the Right Chart Type**
+- **Optimize Performance** (Avoid unnecessary re-renders)
+- **Ensure Accessibility** (Labels, contrast, keyboard navigation)
+- **Keep It Simple** (Avoid clutter, highlight key insights)
 
 ---
 
@@ -110,7 +110,7 @@ export const SalesDashboard = () => {
 
 ## 3. Best Practices in Action
 
-### ✅ 1. Choose the Right Chart Type
+### 1. Choose the Right Chart Type
 
 | **Use Case**     | **Best Chart Type** | **Example**                     |
 | ---------------- | ------------------- | ------------------------------- |
@@ -130,7 +130,7 @@ export const LineChart = ({ data }) => (
 );
 ```
 
-### ✅ 2. Optimize Performance
+### 2. Optimize Performance
 
 - **Memoize chart data** to prevent unnecessary re-renders.
 - **Debounce API calls** if data updates frequently.
@@ -147,7 +147,7 @@ useEffect(() => {
 }, [debouncedSearch]);
 ```
 
-### ✅ 3. Ensure Accessibility
+### 3. Ensure Accessibility
 
 - Add ARIA labels for screen readers.
 - Use high-contrast colors.
@@ -157,7 +157,7 @@ useEffect(() => {
 <BarChart data={data} aria-label='Monthly sales bar chart' />
 ```
 
-### ✅ 4. Simplify & Highlight Key Insights
+### 4. Simplify & Highlight Key Insights
 
 - Annotate important points (e.g., peak sales month).
 - Use tooltips for additional context.
@@ -270,4 +270,4 @@ const res = await axios.get('https://disease.sh/v3/covid-19/countries');
 
 **Pro Tip:** Use Chart.js plugins for annotations, zoom, etc.
 
-**Next Step:** Integrate into your capstone project! 🚀
+**Next Step:** Integrate into your capstone project!

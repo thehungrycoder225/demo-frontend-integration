@@ -7,7 +7,7 @@ Connecting to APIs is a fundamental part of modern web development. Axios is a p
 ## 1. Structuring API Requests Properly
 
 **Best Practice:**  
-✅ Create a centralized API service to avoid repeating Axios configurations across components.
+Create a centralized API service to avoid repeating Axios configurations across components.
 
 **Example:** `src/services/api.js`
 
@@ -55,7 +55,7 @@ export default api;
 ## 2. Using `useEffect` for Data Fetching
 
 **Best Practice:**  
-✅ Fetch data in `useEffect` and manage loading, error, and data states.
+Fetch data in `useEffect` and manage loading, error, and data states.
 
 **Example:** Fetching Users
 
@@ -106,7 +106,7 @@ function UserList() {
 ## 3. Cancelling Requests on Unmount (Cleanup)
 
 **Best Practice:**  
-✅ Cancel pending requests when a component unmounts to prevent memory leaks.
+Cancel pending requests when a component unmounts to prevent memory leaks.
 
 **Example:** Using `AbortController`
 
@@ -145,7 +145,7 @@ useEffect(() => {
 ## 4. Error Handling Strategies
 
 **Best Practice:**  
-✅ Handle API errors gracefully (network issues, 4xx/5xx responses).
+Handle API errors gracefully (network issues, 4xx/5xx responses).
 
 **Example:** Structured Error Handling
 
@@ -180,7 +180,7 @@ try {
 ## 5. Optimizing Performance (Debouncing, Caching)
 
 **Best Practice:**  
-✅ Debounce search inputs to avoid excessive API calls.
+Debounce search inputs to avoid excessive API calls.
 
 **Example:** Debounced Search with Lodash
 
@@ -229,7 +229,7 @@ function SearchUsers() {
 ## 6. Handling CRUD Operations
 
 **Best Practice:**  
-✅ Re-fetch data after mutations (POST/PUT/DELETE) to keep UI in sync.
+Re-fetch data after mutations (POST/PUT/DELETE) to keep UI in sync.
 
 **Example:** Adding a New User
 
@@ -259,7 +259,7 @@ const addUser = async (userData) => {
 ## 7. Using Custom Hooks for API Calls
 
 **Best Practice:**  
-✅ Abstract API logic into reusable custom hooks.
+Abstract API logic into reusable custom hooks.
 
 **Example:** `useFetch` Hook
 

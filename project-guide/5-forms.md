@@ -105,8 +105,6 @@ function LoginForm() {
 - **Zod**: Type-safe validation.
 - **React Hook Form**: Optimized re-renders, minimal boilerplate.
 
----
-
 ## 6.4 Disabling Submit Button
 
 ### Best Practice: Disable Until Valid
@@ -117,12 +115,10 @@ function LoginForm() {
 </button>
 ```
 
-✅ **Why?**
+**Why?**
 
 - Prevents invalid submissions.
 - Improves UX by giving feedback.
-
----
 
 ## 6.5 Generic Form Components (Reusable)
 
@@ -149,12 +145,10 @@ function FormInput({ label, type, register, errors, name }) {
 />;
 ```
 
-✅ **Why?**
+**Why?**
 
 - Reduces duplication.
 - Ensures consistent styling/validation.
-
----
 
 ## 6.6 Handling Dynamic Forms (Add/Remove Fields)
 
@@ -184,12 +178,10 @@ function DynamicForm() {
 }
 ```
 
-✅ **Why?**
+**Why?**
 
 - Simplifies dynamic form management.
 - Handles nested arrays efficiently.
-
----
 
 ## 6.7 Optimizing Performance
 
@@ -216,11 +208,9 @@ function ExpensiveForm({ users }) {
 }
 ```
 
-✅ **Why?**
+**Why?**
 
 - Avoids unnecessary re-renders.
-
----
 
 ## 6.8 Accessibility (A11y) Best Practices
 
@@ -234,12 +224,10 @@ function ExpensiveForm({ users }) {
 </form>
 ```
 
-✅ **Why?**
+**Why?**
 
 - Screen reader-friendly.
 - Better keyboard navigation.
-
----
 
 ## Summary of Best Practices
 
@@ -252,8 +240,6 @@ function ExpensiveForm({ users }) {
 | Disable Invalid Submits | `disabled={!isValid}`   | Better UX               |
 | Accessibility           | Labels, ARIA            | Inclusive design        |
 
----
-
 ## Step-by-Step Workflow for Building Forms in React with Best Practices
 
 This guide provides a complete, step-by-step workflow for building forms in React, covering:
@@ -264,13 +250,3 @@ This guide provides a complete, step-by-step workflow for building forms in Reac
 ✔ Dynamic fields  
 ✔ API submission  
 ✔ Accessibility & performance optimizations
-
----
-
-### Final Output:
-
-✅ Clean, maintainable forms  
-✅ Real-time validation  
-✅ Dynamic field support  
-✅ API integration  
-✅ Optimized performance

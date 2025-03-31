@@ -21,8 +21,8 @@ After login, the server returns a JWT, which the frontend stores (e.g., in `loca
 
 ### 2.1 Secure Token Storage
 
-🚫 **Bad Practice:** Storing JWT in `localStorage` without encryption (vulnerable to XSS).  
-✅ **Best Practice:**
+**Bad Practice:** Storing JWT in `localStorage` without encryption (vulnerable to XSS).  
+ **Best Practice:**
 
 - Use `httpOnly` cookies (server-side) for better security.
 - If using `localStorage`, encrypt the token (e.g., with `crypto-js`).
@@ -40,8 +40,8 @@ axios.defaults.headers.common['Authorization'] = `Bearer ${token}`; // Attach to
 
 ### 2.2 Token Expiry & Refresh Tokens
 
-🚫 **Bad Practice:** Using a single long-lived JWT (risk if stolen).  
-✅ **Best Practice:**
+**Bad Practice:** Using a single long-lived JWT (risk if stolen).  
+ **Best Practice:**
 
 - Set short-lived access tokens (e.g., 15 mins) + long-lived refresh tokens.
 - Store refresh tokens securely (`httpOnly` cookie) and use them to get new access tokens.
@@ -67,8 +67,8 @@ try {
 
 ### 2.3 Protecting Routes
 
-🚫 **Bad Practice:** Only checking token presence (no validation).  
-✅ **Best Practice:**
+**Bad Practice:** Only checking token presence (no validation).  
+ **Best Practice:**
 
 - Verify token validity (e.g., signature, expiry) before granting access.
 - Use a higher-order component (HOC) or `<ProtectedRoute>` wrapper.
@@ -100,8 +100,8 @@ const ProtectedRoute = ({ children }) => {
 
 ### 2.4 Handling Token Expiry Gracefully
 
-🚫 **Bad Practice:** Silent failures when token expires.  
-✅ **Best Practice:**
+**Bad Practice:** Silent failures when token expires.  
+ **Best Practice:**
 
 - Intercept `401` errors globally (Axios) and attempt token refresh.
 
@@ -130,8 +130,8 @@ axios.interceptors.response.use(
 
 ### 2.5 CSRF Protection
 
-🚫 **Bad Practice:** Ignoring CSRF when using cookies.  
-✅ **Best Practice:**
+**Bad Practice:** Ignoring CSRF when using cookies.  
+ **Best Practice:**
 
 - Use anti-CSRF tokens (e.g., `csrf-token` header) if using cookies.
 
@@ -147,8 +147,8 @@ axios.defaults.headers.common['X-CSRF-TOKEN'] = csrfToken;
 
 ### 2.6 Password Security
 
-🚫 **Bad Practice:** Sending plaintext passwords.  
-✅ **Best Practice:**
+**Bad Practice:** Sending plaintext passwords.  
+ **Best Practice:**
 
 - Always hash passwords on the backend.
 - Use HTTPS to encrypt traffic.
@@ -170,8 +170,8 @@ const handleSubmit = () => {
 
 ### 2.7 Logout Mechanism
 
-🚫 **Bad Practice:** Only clearing frontend token.  
-✅ **Best Practice:**
+**Bad Practice:** Only clearing frontend token.  
+ **Best Practice:**
 
 - Call a `/logout` endpoint to invalidate the token on the server.
 - Clear client-side storage.
