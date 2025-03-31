@@ -21,19 +21,19 @@ This guide covers implementing **JWT Authentication** with **Role-Based Access C
 project-root/
 ├── src/
 │   ├── components/
-│   │   ├── Login.js
-│   │   ├── Logout.js
-│   │   ├── ProtectedRoute.js
+│   │   ├── Login.jsx
+│   │   ├── Logout.jsx
+│   │   ├── ProtectedRoute.jsx
 │   ├── context/
-│   │   ├── AuthContext.js
+│   │   ├── AuthContext.jsx
 │   ├── pages/
-│   │   ├── Dashboard.js
-│   │   ├── AdminPage.js
-│   │   ├── Unauthorized.js
+│   │   ├── Dashboard.jsx
+│   │   ├── AdminPage.jsx
+│   │   ├── Unauthorized.jsx
 │   ├── services/
 │   │   ├── authService.js
-│   ├── App.js
-│   ├── index.js
+│   ├── App.jsx
+│   ├── index.jsx
 ├── .env
 ├── package.json
 ```
@@ -109,7 +109,7 @@ export default AuthContext;
 
 ### **Step 3: Implementing Login with Role Handling**
 
-#### **`src/components/Login.js`**
+#### **`src/components/Login.jsx`**
 
 ```js
 import { useForm } from 'react-hook-form';
@@ -149,7 +149,7 @@ export default Login;
 
 ### **Step 4: Role-Based Protected Routes**
 
-#### **`src/components/ProtectedRoute.js`**
+#### **`src/components/ProtectedRoute.jsx`**
 
 ```js
 import { useContext } from 'react';
@@ -171,9 +171,9 @@ export default ProtectedRoute;
 
 ---
 
-### **Step 5: Implementing Role-Based Routes in `App.js`**
+### **Step 5: Implementing Role-Based Routes in `App.jsx`**
 
-#### **`src/App.js`**
+#### **`src/App.jsx`**
 
 ```js
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
