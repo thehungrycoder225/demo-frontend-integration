@@ -48,7 +48,15 @@ const Dashboard = () => {
       <div className='p-4 mt-4 bg-white shadow-md rounded-lg w-full max-w-2xl'>
         <div>
           <h4 className='font-semibold'>Pokémon Table</h4>
+          <a
+            href='/add-pokemon'
+            className='text-indigo-500 hover:text-indigo-700 font-semibold text-sm'
+          >
+            Add Pokemon
+          </a>
+          {/*  */}
         </div>
+
         <table className='min-w-full border-collapse mt-4 '>
           <thead>
             <tr className='bg-gray-100'>
