@@ -2,10 +2,10 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { login } from '../api/auth';
+import toast, { Toaster } from 'react-hot-toast';
 
 const LoginForm = () => {
   const [formData, setFormData] = useState({ username: '', password: '' });
-  const [error, setError] = useState('');
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -18,7 +18,7 @@ const LoginForm = () => {
     const { username, password } = formData;
 
     if (!username || !password) {
-      setError('Please fill in all fields');
+      toast.error('Please fill in all fields.');
       return;
     }
 
@@ -27,49 +27,52 @@ const LoginForm = () => {
 
       if (response.token) {
         localStorage.setItem('token', response.token);
-        localStorage.setItem('username', response.username || '');
-        localStorage.setItem('role', response.role || '');
         navigate('/dashboard');
       } else {
-        setError('Login failed. Please try again.');
+        toast.error(response.message || 'Login failed. Please try again.');
       }
     } catch (err) {
-      setError(err.message || 'Login failed. Please try again.');
+      console.error(err);
+      toast.error(err.message || 'An error occurred. Please try again later.');
     }
   };
 
   return (
-    <form onSubmit={handleSubmit} className='space-y-4'>
-      {error && <div className='text-red-500'>{error}</div>}
+    <>
+      <Toaster position='top-center' reverseOrder={false} />
+      <form onSubmit={handleSubmit} className='space-y-4'>
+        <div>
+          <label htmlFor='username'>Username</label>
+          <input
+            id='username'
+            name='username'
+            type='text'
+            value={formData.username}
+            onChange={handleChange}
+            className='w-full p-2 border rounded'
+          />
+        </div>
 
-      <div>
-        <label htmlFor='username'>Username</label>
-        <input
-          id='username'
-          name='username'
-          type='text'
-          value={formData.username}
-          onChange={handleChange}
-          className='w-full p-2 border rounded'
-        />
-      </div>
+        <div>
+          <label htmlFor='password'>Password</label>
+          <input
+            id='password'
+            name='password'
+            type='password'
+            value={formData.password}
+            onChange={handleChange}
+            className='w-full p-2 border rounded'
+          />
+        </div>
 
-      <div>
-        <label htmlFor='password'>Password</label>
-        <input
-          id='password'
-          name='password'
-          type='password'
-          value={formData.password}
-          onChange={handleChange}
-          className='w-full p-2 border rounded'
-        />
-      </div>
-
-      <button type='submit' className='bg-neutral-900 text-white p-3 rounded'>
-        Login
-      </button>
-    </form>
+        <button
+          type='submit'
+          className='bg-neutral-900 font-semibold text-white p-3 rounded'
+        >
+          Login
+        </button>
+      </form>
+    </>
   );
 };
 

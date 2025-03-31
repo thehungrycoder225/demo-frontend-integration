@@ -31,7 +31,7 @@ const Dashboard = () => {
 
   return (
     <div className='flex flex-col items-center justify-center min-h-screen'>
-      <div className='grid grid-cols-3 gap-4 p-4 bg-white justify-center items-center'>
+      <div className='grid grid-cols-3 gap-4 p-4 bg-white justify-between items-center'>
         <h3 className='font-bold'>Dashboard</h3>
         <h4 className='font-semibold'>Pokémon Table</h4>
         <button
