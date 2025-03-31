@@ -4,50 +4,50 @@ Managing state effectively is crucial for building scalable, maintainable, and b
 
 ## 1. State Hook (`useState`) – Best Practices
 
-### ✅ Do: Use Descriptive Variable Names
+### Do: Use Descriptive Variable Names
 
-**❌ Bad:**
+** Bad:**
 
 ```jsx
 const [x, setX] = useState(null);
 ```
 
-**✅ Good:**
+** Good:**
 
 ```jsx
 const [user, setUser] = useState(null);
 ```
 
-### ✅ Do: Initialize State Properly
+### Do: Initialize State Properly
 
 Avoid undefined or null if possible.
 
-**❌ Bad:**
+** Bad:**
 
 ```jsx
 // May cause "undefined" errors
 const [todos, setTodos] = useState();
 ```
 
-**✅ Good:**
+** Good:**
 
 ```jsx
 // Initialize with default value
 const [todos, setTodos] = useState([]);
 ```
 
-### ✅ Do: Group Related State
+### Do: Group Related State
 
 Instead of multiple `useState` calls:
 
-**❌ Cluttered:**
+** Cluttered:**
 
 ```jsx
 const [name, setName] = useState('');
 const [email, setEmail] = useState('');
 ```
 
-**✅ Group related state:**
+** Group related state:**
 
 ```jsx
 const [form, setForm] = useState({
@@ -60,35 +60,35 @@ const [form, setForm] = useState({
 
 ## 2. Updating Objects & Arrays – Avoiding Mutations
 
-### 🔄 Updating Objects (Immutability)
+### Updating Objects (Immutability)
 
-**❌ Bad (Direct Mutation):**
+** Bad (Direct Mutation):**
 
 ```jsx
 const updateUser = () => {
-  user.name = 'Alice'; // ❌ Mutates directly
+  user.name = 'Alice'; //  Mutates directly
   setUser(user); // Won’t trigger re-render
 };
 ```
 
-**✅ Good (Spread Operator):**
+** Good (Spread Operator):**
 
 ```jsx
 const updateUser = () => {
-  setUser({ ...user, name: 'Alice' }); // ✅ Creates new object
+  setUser({ ...user, name: 'Alice' }); //  Creates new object
 };
 ```
 
-### 📝 Updating Nested Objects
+### Updating Nested Objects
 
-**❌ Bad (Nested Mutation):**
+** Bad (Nested Mutation):**
 
 ```jsx
-user.profile.age = 30; // ❌ Still mutating!
+user.profile.age = 30; //  Still mutating!
 setUser(user);
 ```
 
-**✅ Good (Deep Copy):**
+** Good (Deep Copy):**
 
 ```jsx
 setUser({
@@ -97,16 +97,16 @@ setUser({
 });
 ```
 
-### 📊 Updating Arrays
+### Updating Arrays
 
-**❌ Bad (Push Mutates):**
+** Bad (Push Mutates):**
 
 ```jsx
-todos.push(newTodo); // ❌ Mutates array
+todos.push(newTodo); //  Mutates array
 setTodos(todos);
 ```
 
-**✅ Good (New Array):**
+** Good (New Array):**
 
 ```jsx
 // Adding
@@ -135,7 +135,7 @@ setTodos(
 npm install immer
 ```
 
-### 🔄 Example: Updating Nested State
+### Example: Updating Nested State
 
 **Without Immer (Messy):**
 
@@ -153,7 +153,7 @@ import { produce } from 'immer';
 
 setUser(
   produce((draft) => {
-    draft.address.zip = '20002'; // ✅ Looks like mutation, but safe!
+    draft.address.zip = '20002'; //  Looks like mutation, but safe!
   })
 );
 ```
@@ -210,9 +210,9 @@ function ChildComponent() {
 
 ## 5. Avoiding Common State Pitfalls
 
-### 🚫 Don’t Use State for Derived Values
+### Don’t Use State for Derived Values
 
-**❌ Bad (Redundant State):**
+** Bad (Redundant State):**
 
 ```jsx
 const [fullName, setFullName] = useState('');
@@ -221,24 +221,24 @@ useEffect(() => {
 }, [firstName, lastName]);
 ```
 
-**✅ Good (Compute Dynamically):**
+** Good (Compute Dynamically):**
 
 ```jsx
 const fullName = `${firstName} ${lastName}`; // No state needed!
 ```
 
-### 🚫 Don’t Overuse `useState` for Forms
+### Don’t Overuse `useState` for Forms
 
 Instead of managing each input with `useState`:
 
-**❌ Tedious:**
+** Tedious:**
 
 ```jsx
 const [name, setName] = useState('');
 const [email, setEmail] = useState('');
 ```
 
-**✅ Use `useReducer` or `React Hook Form`:**
+** Use `useReducer` or `React Hook Form`:**
 
 ```jsx
 const { register, handleSubmit } = useForm();
@@ -248,7 +248,7 @@ const { register, handleSubmit } = useForm();
 
 ## Real-World Example: Shopping Cart State
 
-### 🛒 State Structure
+### State Structure
 
 ```jsx
 const [cart, setCart] = useState({
@@ -257,7 +257,7 @@ const [cart, setCart] = useState({
 });
 ```
 
-### 🔄 Adding an Item (Immutably)
+### Adding an Item (Immutably)
 
 ```jsx
 const addToCart = (product) => {
@@ -268,7 +268,7 @@ const addToCart = (product) => {
 };
 ```
 
-### 🗑️ Removing an Item
+### Removing an Item
 
 ```jsx
 const removeFromCart = (productId) => {
