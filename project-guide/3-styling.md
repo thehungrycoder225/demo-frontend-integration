@@ -316,34 +316,33 @@ npm install
 
 ### Step 2: Install Tailwind CSS
 
+### Installation
+
 ```bash
-npm install -D tailwindcss postcss autoprefixer
-npx tailwindcss init
+npm install tailwindcss @tailwindcss/vite
 ```
 
-### Step 3: Configure `tailwind.config.js`
+### Adding Tailwind to Your Project
+
+Configure the Vite plugin
+Add the @tailwindcss/vite plugin to your Vite configuration.
 
 ```javascript
-// tailwind.config.js
-module.exports = {
-  content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
-  theme: {
-    extend: {}, // Add custom styles here
-  },
-  plugins: [],
-};
+import { defineConfig } from 'vite';
+import tailwindcss from '@tailwindcss/vite';
+export default defineConfig({
+  plugins: [tailwindcss()],
+});
 ```
 
-### Step 4: Add Tailwind to CSS
+Import Tailwind CSS
+Add an @import to your CSS file that imports Tailwind CSS.
 
 ```css
-/* src/index.css */
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss';
 ```
 
-### Step 5: Run the App
+### Step 3: Run the App
 
 ```bash
 npm run dev

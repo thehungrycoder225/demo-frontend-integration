@@ -23,7 +23,7 @@ React is a JavaScript library for building user interfaces. It follows a compone
 - When you need reusable components for UI consistency.
 - When performance optimization is crucial.
 
-###  Exercise
+### Exercise
 
 1. Set up a basic React application.
 2. Create a functional component that displays `"Hello, React!"`.
@@ -122,22 +122,27 @@ Tailwind CSS is a utility-first CSS framework that simplifies styling in React a
 ### Installation
 
 ```bash
-npm install -D tailwindcss postcss autoprefixer
-npx tailwindcss init -p
+npm install tailwindcss @tailwindcss/vite
 ```
 
 ### Adding Tailwind to Your Project
 
-Modify `tailwind.config.js`:
+Configure the Vite plugin
+Add the @tailwindcss/vite plugin to your Vite configuration.
 
 ```javascript
-module.exports = {
-  content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
-  theme: {
-    extend: {},
-  },
-  plugins: [],
-};
+import { defineConfig } from 'vite';
+import tailwindcss from '@tailwindcss/vite';
+export default defineConfig({
+  plugins: [tailwindcss()],
+});
+```
+
+Import Tailwind CSS
+Add an @import to your CSS file that imports Tailwind CSS.
+
+```css
+@import 'tailwindcss';
 ```
 
 ### Using Tailwind in Components
